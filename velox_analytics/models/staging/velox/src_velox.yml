@@ -1,0 +1,59 @@
+version: 2
+
+sources:
+
+- name: velox
+  description: "Raw source data from Velox Commerce transactional systems"
+  database: customer-retention-rfm
+  schema: raw_velox
+
+  tables:
+
+  - name: customers
+    description: "Registered customer accounts from the e-commerce platform"
+    columns:
+
+    - name: customer_id
+      description: "Primary key - unique customer identifier"
+    - name: email
+      description: "Customer email address, used as login"
+    - name: updated_at
+      description: "Last record update timestamp, used for incremental loads"
+
+  - name: products
+    description: "Product catalog including pricing and category"
+    columns:
+
+    - name: product_id
+      description: "Primary key - unique product identifier"
+    - name: sku
+      description: "Stock keeping unit, human-readable product code"
+
+  - name: orders
+    description: "Order header records - one row per order"
+    columns:
+
+    - name: order_id
+      description: "Primary key - unique order identifier"
+    - name: customer_id
+      description: "Foreign key to customers"
+
+  - name: order_items
+    description: "Order line items - one row per product per order"
+    columns:
+
+    - name: order_item_id
+      description: "Primary key - unique line item identifier"
+    - name: order_id
+      description: "Foreign key to orders"
+    - name: product_id
+      description: "Foreign key to products"
+
+  - name: payments
+    description: "Payment transactions linked to orders"
+    columns:
+
+    - name: payment_id
+      description: "Primary key - unique payment identifier"
+    - name: order_id
+      description: "Foreign key to orders"

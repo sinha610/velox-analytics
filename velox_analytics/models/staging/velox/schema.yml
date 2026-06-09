@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Cleaned and renamed customer records from the Velox source system"
+    columns:
+      - name: customer_id
+        description: "Primary key"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: email
+        description: "Raw customer email"
+        data_tests:
+          - not_null
+
+      - name: country_code
+        description: "ISO 2-letter country code, uppercased"
+
+  - name: stg_products
+    description: "Cleaned product catalog with derived margin fields"
+    columns:
+      - name: product_id
+        description: "Primary key"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: sku
+        description: "Stock keeping unit"
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_orders
+    description: "Cleaned order headers with status flags and date casts"
+    columns:
+      - name: order_id
+        description: "Primary key"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: order_status
+        description: "Current order status"
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - processing
+                  - shipped
+                  - delivered
+                  - cancelled
+
+  - name: stg_order_items
+    description: "Cleaned order line items with derived total amount"
+    columns:
+      - name: order_item_id
+        description: "Primary key"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: "Foreign key to stg_orders"
+        data_tests:
+          - not_null
+
+  - name: stg_payments
+    description: "Cleaned payment transactions with status flags"
+    columns:
+      - name: payment_id
+        description: "Primary key"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: payment_status
+        description: "Current payment status"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - paid
+                  - pending
+                  - refunded
+                  - failed
